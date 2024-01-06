@@ -1,5 +1,6 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
+import { SERVER } from "../../UrlList.js";
 const DataContext = createContext();
 function Context({ children }) {
     const [keyword, SetKeyword] = useState("");
@@ -16,7 +17,7 @@ function Context({ children }) {
     const [fetch, refetch] = useState(1);
     const [loading, setLoading] = useState(true);
     const fetchResults = async () => {
-        const res = await axios.get(`http://localhost:5001/query?keyword=${keyword}&end=${end}&topic=${topic}&sector=${sector}&region=${region}&pestle=${pestle}&source=${source}&swot=${swot}&country=${country}&city=${city}`);
+        const res = await axios.get(`${SERVER}/query?keyword=${keyword}&end=${end}&topic=${topic}&sector=${sector}&region=${region}&pestle=${pestle}&source=${source}&swot=${swot}&country=${country}&city=${city}`);
         setResults(res);
         setLoading(false);
     }

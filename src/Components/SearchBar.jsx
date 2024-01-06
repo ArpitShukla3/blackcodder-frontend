@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { DataState } from "../Context/Context";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowCircleDown, faCross, faCut, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { SERVER } from "../../UrlList.js";
 
 function SearchBar(props) {
     const [searchQuery, setSearchQuery] = useState("");
@@ -41,7 +42,7 @@ function SearchBar(props) {
 
     async function downloadData(query, type) {
         setLoading(true)
-        const filtered = await axios.get(`http://localhost:5001/search?search=${query}&type=${type}`)
+        const filtered = await axios.get(`${SERVER}/search?search=${query}&type=${type}`)
         setFilteredItems(filtered.data.data);
         setLoading(false);
     }

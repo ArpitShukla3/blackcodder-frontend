@@ -11,35 +11,23 @@ function SearchBar(props) {
     const [show, setShow] = useState(false);
     const itemList = props.options;
     const { fetch, refetch, setLoading } = DataState();
-    // function debounce(func, timeout = 1000) {
-    //     let timer;
-    //     return (...args) => {
-    //         clearTimeout(timer);
-    //         timer = setTimeout(() => { func.apply(this, args); }, timeout);
-    //     };
-    // }
-    function debounce(cb, delay = 2000) {
-        let timerId;
-        return (...args) => {
-            clearTimeout(timerId)
-            timerId = setTimeout(() => {
-                cb(...args)
-            }, delay)
-        }
-    }
-
-    const debouncedSearch = debounce(() => { console.log("query"); });
     const handleInputChange = (event) => {
         setShow(true)
         const query = event.target.value;
         if (query === "") {
             setShow(false);
         }
-
-        setSearchQuery(query);
-
+        setSearchQuery(event.target.value);
     };
-
+    useEffect(() => {
+        const delayDebounceFn = setTimeout(async () => {
+            setLoading(true)
+            const filtered = await axios.get(`${SERVER}/search?search=${searchQuery}&type=${props.type}`)
+            setFilteredItems(filtered.data.data);
+            setLoading(false);
+        }, 1000);
+        return () => clearTimeout(delayDebounceFn);
+      }, [searchQuery]);
     async function downloadData(query, type) {
         setLoading(true)
         const filtered = await axios.get(`${SERVER}/search?search=${query}&type=${type}`)
@@ -58,7 +46,7 @@ function SearchBar(props) {
                     type="text"
                     placeholder={" " + props.type}
                     value={searchQuery}
-                    onChange={(e) => { debouncedSearch(e.target.value); handleInputChange(e); }}
+                    onChange={handleInputChange}
                     className="rounded"
 
                 />
